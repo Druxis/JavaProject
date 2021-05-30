@@ -35,11 +35,14 @@ public class MyFrame extends JFrame {
     
     JTable tableRS = new JTable();
     JScrollPane scrollerRS = new JScrollPane(tableRS);
+    
+    JTable tableI = new JTable();
+    JScrollPane scrollerI = new JScrollPane(tableI);
 	
 	JPanel waterPanel=new JPanel();
 	JPanel regionPanel=new JPanel();
 	JPanel responsiblePanel=new JPanel();
-	JPanel searchPanel = new JPanel();
+	JPanel infoPanel = new JPanel();
 
 	
 	JPanel upPanelW = new JPanel();
@@ -54,6 +57,9 @@ public class MyFrame extends JFrame {
 	JPanel midPanelRS = new JPanel();
 	JPanel downPanelRS = new JPanel();
 	
+	JPanel upPanelI = new JPanel();
+	JPanel downPanelI = new JPanel();
+	
 	
 	JButton addButtonW = new JButton("Add");
 	JButton deleteButtonW = new JButton("Delete");
@@ -66,13 +72,21 @@ public class MyFrame extends JFrame {
 	JButton deleteButtonR = new JButton("Delete");
 	JButton editButtonR = new JButton("Edit");
 	JButton searchButtonR = new JButton("Search");
-	JComboBox<String> searchComboR = new JComboBox<String>();
+	JButton resetButtonR = new JButton("Reset");
+	JComboBox<String> searchComboR1 = new JComboBox<String>();
+	JComboBox<String> searchComboR2 = new JComboBox<String>();
 
 	JButton addButtonRS = new JButton("Add");
 	JButton deleteButtonRS = new JButton("Delete");
 	JButton editButtonRS = new JButton("Edit");
 	JButton searchButtonRS = new JButton("Search");
+	JButton resetButtonRS = new JButton("Reset");
 	JComboBox<String> searchComboRS = new JComboBox<String>();
+	
+	JComboBox<String> searchComboI1 = new JComboBox<String>();
+	JComboBox<String> searchComboI2 = new JComboBox<String>();
+	JButton searchButtonI = new JButton("Search");
+
 	
 	
 	
@@ -114,7 +128,7 @@ public class MyFrame extends JFrame {
 		tab.add(waterPanel, "Water");
 		tab.add(regionPanel, "Region");
 		tab.add(responsiblePanel, "Responible");
-		tab.add(searchPanel, "Info");
+		tab.add(infoPanel, "Info");
 		waterPanel.add(upPanelW);
 		this.add(tab);
 		
@@ -129,13 +143,15 @@ public class MyFrame extends JFrame {
 		upPanelW.add(waterDepthL);
 		upPanelW.add(waterDepthTF);
 
-		upPanelR.setLayout(new GridLayout(3, 2));
+		upPanelR.setLayout(new GridLayout(4, 2));
 		upPanelR.add(regionNameL);
 		upPanelR.add(regionNameTF);
 		upPanelR.add(regionAreaL);
 		upPanelR.add(regionAreaTF);
 		upPanelR.add(regionPopulationL);
 		upPanelR.add(regionPopulationTF);
+		upPanelR.add(searchComboR1);
+		upPanelR.add(searchComboR2);
 
 		upPanelRS.setLayout(new GridLayout(4, 2));
 		upPanelRS.add(responsibleFnameL);
@@ -148,7 +164,10 @@ public class MyFrame extends JFrame {
 		upPanelRS.add(responsibleCommentTF);
 		
 		
-		
+		upPanelI.add(searchButtonI);
+		upPanelI.add(searchComboI1);
+		upPanelI.add(searchComboI2);
+
 		
 		midPanelW.add(addButtonW);
 		midPanelW.add(deleteButtonW);
@@ -160,26 +179,47 @@ public class MyFrame extends JFrame {
 		midPanelR.add(addButtonR);
 		midPanelR.add(deleteButtonR);
 		midPanelR.add(editButtonR);
-		midPanelR.add(searchComboR);
+		midPanelR.add(searchButtonR);
+		midPanelR.add(resetButtonR);
 		
 		midPanelRS.add(addButtonRS);
 		midPanelRS.add(deleteButtonRS);
 		midPanelRS.add(editButtonRS);
 		midPanelRS.add(searchComboRS);
+		midPanelRS.add(searchButtonRS);
+		midPanelRS.add(resetButtonRS);
 		
 		
 		addButtonW.addActionListener(new AddActionWater());
-		//addButtonR.addActionListener(new AddActionRegion());
+		addButtonR.addActionListener(new AddActionRegion());
 		addButtonRS.addActionListener(new AddActionResponsible());
 		
 		deleteButtonW.addActionListener(new DeleteWater());
-		//deleteButtonR.addActionListener(new DeleteRegion());
+		deleteButtonR.addActionListener(new DeleteRegion());
 		deleteButtonRS.addActionListener(new DeleteResponsible());
 		
 		
 		DBHelper.fillCombo(searchComboW, "name", "water");
 		searchButtonW.addActionListener(new SearchActionWater());
 		resetButtonW.addActionListener(new ResetActionWater());
+	    editButtonW.addActionListener(new EditActionWater());
+		
+		
+		DBHelper.fillComboRegion(searchComboR1);
+		searchButtonR.addActionListener(new SearchActionRegion());
+		resetButtonR.addActionListener(new ResetActionRegion());
+		DBHelper.fillCombo(searchComboR2, "name", "water");
+	    editButtonR.addActionListener(new EditActionRegion());
+	    
+		DBHelper.fillComboRegion(searchComboRS);
+		searchButtonRS.addActionListener(new SearchActionResponsible());
+		resetButtonRS.addActionListener(new ResetActionResponsible());
+	    editButtonRS.addActionListener(new EditActionResponsible());
+	    
+	    searchButtonI.addActionListener(new SearchActionInfo());
+
+		
+		
 		
 		
 		
@@ -196,13 +236,21 @@ public class MyFrame extends JFrame {
 	
 		downPanelR.add(scrollerR);
 		scrollerR.setPreferredSize(new Dimension(600, 200));
-		tableR.setModel(DBHelper.getAllData("region"));
+		tableR.setModel(DBHelper.getAllDataRegion());
 		tableR.addMouseListener(new TableListenerR());
 	
 		downPanelRS.add(scrollerRS);
 		scrollerRS.setPreferredSize(new Dimension(600, 200));
 		tableRS.setModel(DBHelper.getAllData("responsible"));
 		tableRS.addMouseListener(new TableListenerRS());
+		
+		downPanelI.add(scrollerI);
+		scrollerI.setPreferredSize(new Dimension(600, 200));
+		tableI.setModel(DBHelper.getAllDataInfo());
+
+
+		
+
 
 		
 		
@@ -224,6 +272,13 @@ public class MyFrame extends JFrame {
 		responsiblePanel.add(upPanelRS);
 		responsiblePanel.add(midPanelRS);
 		responsiblePanel.add(downPanelRS);
+		
+		infoPanel.setLayout(new GridLayout(3, 1));
+		infoPanel.setSize(700, 800);
+		infoPanel.add(upPanelI);
+		infoPanel.add(downPanelI);
+		
+		
 	
 		
 		
@@ -285,7 +340,7 @@ public class MyFrame extends JFrame {
 				state = conn.prepareStatement(sql);
 				state.setInt(1, id);
 				state.execute();
-				tableR.setModel(DBHelper.getAllData("region"));
+				tableR.setModel(DBHelper.getAllDataRegion());
 				id = -1;
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
@@ -374,23 +429,30 @@ class AddActionWater implements ActionListener{
 		}
 
 	}
-/*
+
 	class AddActionRegion implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			String item = searchComboR2.getSelectedItem().toString();
+			String[] content = item.split(" ");
+			int waterId = Integer.parseInt(content[0]);
+			String responsible = searchComboR1.getSelectedItem().toString();
+			String[] responsibleContent = responsible.split(" ");
+			int responsibleId = Integer.parseInt(responsibleContent[0]);
 			String name = regionNameTF.getText();
 			int area = Integer.parseInt(regionAreaTF.getText());
 			int population = Integer.parseInt(regionPopulationTF.getText());
 			conn = DBHelper.getConnection();
 			try {
 				
-				state = conn.prepareStatement("insert into region values(null,?,?,?,null,null);");
+				state = conn.prepareStatement("insert into region values(null,?,?,?,?,?);");
 				state.setString(1, name);
 				state.setInt(2, area);
 				state.setInt(3, population);
-
+				state.setInt(4, responsibleId);
+				state.setInt(5, waterId);
 				state.execute();
-				tableR.setModel(DBHelper.getAllData("region"));
+				tableR.setModel(DBHelper.getAllDataRegion());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -399,7 +461,7 @@ class AddActionWater implements ActionListener{
 			clearFormR();
 		}
 
-	} */
+	} 
 	
 	class SearchActionWater implements ActionListener {
         @Override
@@ -444,13 +506,215 @@ class AddActionWater implements ActionListener{
 			}
 		}
 	}
+	
+	class SearchActionRegion implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+            String item = searchComboR1.getSelectedItem().toString();
+            String [] content = item.split(" ");
+            int personId = Integer.parseInt(content[0]);
 
+            conn = DBHelper.getConnection();
+            String sql = "select * from region where id=?";
+            try {
+                state = conn.prepareStatement(sql);
+                state.setInt(1, personId);
+                result = state.executeQuery();
+                tableW.setModel(new MyModel(result));
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+	}
+	
+	class ResetActionRegion implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			conn = DBHelper.getConnection();
+
+			String sql = "select * from region";
+
+			try {
+				state = conn.prepareStatement(sql);
+				state.execute();
+				tableR.setModel(DBHelper.getAllDataRegion());
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	class EditActionWater implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			conn = DBHelper.getConnection();
+			String sql = "UPDATE water SET name = '" + waterNameTF.getText() + "', area = " + waterAreaTF.getText()
+					+ ", depth = " + waterDepthTF.getText() + " WHERE ID=?;";
+			try {
+				state = conn.prepareStatement(sql);
+				state.setInt(1, id);
+				state.execute();
+				id = -1;
+				tableW.setModel(DBHelper.getAllData("water"));
+				DBHelper.fillCombo(searchComboW, "name", "water");
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	class EditActionRegion implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String selectedItem = searchComboR1.getSelectedItem().toString();
+			String[] items = selectedItem.split(" ");
+			int itemIDRegion1 = Integer.parseInt(items[0]);
+			String selectedItemRegion = searchComboR2.getSelectedItem().toString();
+			String[] itemsRegion = selectedItemRegion.split(" ");
+			int itemIDRegion2 = Integer.parseInt(itemsRegion[0]);
+			// TODO Auto-generated method stub
+			conn = DBHelper.getConnection();
+			String sql = "UPDATE region SET name = '" + regionNameTF.getText() + "', area = " + regionAreaTF.getText()
+					+ ", population = " + regionPopulationTF.getText() + ", ID_RESPONSIBLE = " + itemIDRegion1 + ", ID_WATER = " + itemIDRegion2 +  " WHERE ID=?;";
+			try {
+				state = conn.prepareStatement(sql);
+				state.setInt(1, id);
+				state.execute();
+				id = -1;
+				tableR.setModel(DBHelper.getAllData("region"));
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	
+	class EditActionResponsible implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			conn = DBHelper.getConnection();
+			String sql = "UPDATE responsible SET fname = '" + responsibleFnameTF.getText() + "', lname = '" + responsibleLnameTF.getText()
+					+ "', age = " + responsibleAgeTF.getText() + ", comment = '" + responsibleCommentTF.getText() + "' WHERE ID=?;";
+			try {
+				state = conn.prepareStatement(sql);
+				state.setInt(1, id);
+				state.execute();
+				id = -1;
+				tableRS.setModel(DBHelper.getAllData("responsible"));
+				DBHelper.fillComboRegion(searchComboRS);
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	class SearchActionResponsible implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+            String item = searchComboRS.getSelectedItem().toString();
+            String [] content = item.split(" ");
+            int personId = Integer.parseInt(content[0]);
+
+            conn = DBHelper.getConnection();
+            String sql = "select * from responsible where id=?";
+            try {
+                state = conn.prepareStatement(sql);
+                state.setInt(1, personId);
+                result = state.executeQuery();
+                tableRS.setModel(new MyModel(result));
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+	}
+	
+	class ResetActionResponsible implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			conn = DBHelper.getConnection();
+
+			String sql = "select * from responsible";
+
+			try {
+				state = conn.prepareStatement(sql);
+				state.execute();
+				tableRS.setModel(DBHelper.getAllData("responsible"));
+
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	class SearchActionInfo implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String item = searchComboR2.getSelectedItem().toString();
+			String[] content = item.split(" ");
+			int waterId = Integer.parseInt(content[0]);
+			String responsible = searchComboR1.getSelectedItem().toString();
+			String[] responsibleContent = responsible.split(" ");
+			int responsibleId = Integer.parseInt(responsibleContent[0]);
+			String name = regionNameTF.getText();
+			int area = Integer.parseInt(regionAreaTF.getText());
+			int population = Integer.parseInt(regionPopulationTF.getText());
+			conn = DBHelper.getConnection();
+			try {
+				
+				state = conn.prepareStatement("insert into region values(null,?,?,?,?,?);");
+				state.setString(1, name);
+				state.setInt(2, area);
+				state.setInt(3, population);
+				state.setInt(4, responsibleId);
+				state.setInt(5, waterId);
+				state.execute();
+				tableR.setModel(DBHelper.getAllDataRegion());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			clearFormR();
+		}
+
+	} 
+	
+	
+	
+	
+	
+	
+	
 	class TableListenerW implements MouseListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			int row = tableW.getSelectedRow();
 			id = Integer.parseInt(tableW.getValueAt(row, 0).toString());
+
+			if (e.getClickCount() == 2) {
+				waterNameTF.setText(tableW.getValueAt(row, 1).toString());
+				waterAreaTF.setText(tableW.getValueAt(row, 2).toString());
+				waterDepthTF.setText(tableW.getValueAt(row, 3).toString());
+			}
 
 		}
 
@@ -477,6 +741,8 @@ class AddActionWater implements ActionListener{
 			// TODO Auto-generated method stub
 
 		}
+		
+		
 
 	}
 
@@ -486,6 +752,12 @@ class AddActionWater implements ActionListener{
 		public void mouseClicked(MouseEvent e) {
 			int row = tableR.getSelectedRow();
 			id = Integer.parseInt(tableR.getValueAt(row, 0).toString());
+			
+			if (e.getClickCount() == 2) {
+				regionNameTF.setText(tableR.getValueAt(row, 1).toString());
+				regionAreaTF.setText(tableR.getValueAt(row, 2).toString());
+				regionPopulationTF.setText(tableR.getValueAt(row, 3).toString());
+			}
 
 		}
 
@@ -521,6 +793,13 @@ class AddActionWater implements ActionListener{
 		public void mouseClicked(MouseEvent e) {
 			int row = tableRS.getSelectedRow();
 			id = Integer.parseInt(tableRS.getValueAt(row, 0).toString());
+			
+			if (e.getClickCount() == 2) {
+				responsibleFnameTF.setText(tableRS.getValueAt(row, 1).toString());
+				responsibleLnameTF.setText(tableRS.getValueAt(row, 2).toString());
+				responsibleAgeTF.setText(tableRS.getValueAt(row, 3).toString());
+				responsibleCommentTF.setText(tableRS.getValueAt(row, 4).toString());
+			}
 
 		}
 

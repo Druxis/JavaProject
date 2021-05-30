@@ -31,12 +31,30 @@ public class DBHelper {
 			e.printStackTrace();
 		}
 	}
+	
+	static void fillComboRegion(JComboBox<String> combo) {
+
+		conn = getConnection();
+		String sql = "select id, CONCAT(FNAME,' ', LNAME) AS NAME FROM RESPONSIBLE;";
+		try {
+			state = conn.prepareStatement(sql);
+			result = state.executeQuery();
+			combo.removeAllItems();
+			while (result.next()) {
+				String item = result.getObject(1).toString() + " " + result.getObject(2).toString();
+				combo.addItem(item);
+			} // end while
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 
 	static MyModel getAllData(String tableName) {
 
 		conn = getConnection();
 		try {
-			// String sql = "select * from " + tableName;
 			state = conn.prepareStatement("select * from " + tableName);
 			result = state.executeQuery();
 			model = new MyModel(result);
@@ -50,7 +68,45 @@ public class DBHelper {
 		return model;
 	}
 	
+	static MyModel getAllDataRegion() {
 
+		conn = getConnection();
+		try {
+			state = conn.prepareStatement("SELECT REGION.ID, REGION.NAME, REGION.AREA, REGION.POPULATION, RESPONSIBLE.FNAME, RESPONSIBLE.LNAME, WATER.NAME\r\n"
+					+ "FROM REGION, RESPONSIBLE, WATER \r\n"
+					+ "WHERE  REGION.ID_RESPONSIBLE = RESPONSIBLE.ID AND REGION.ID_WATER = WATER.ID");
+			result = state.executeQuery();
+			model = new MyModel(result);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+	}
+
+	static MyModel getAllDataInfo() {
+
+		conn = getConnection();
+		try {
+			state = conn.prepareStatement("SELECT R.ID, R.NAME, R.AREA, R.POPULATION, CONCAT (RES.FNAME,' ', RES.LNAME) AS NAME, W.NAME\r\n"
+					+ " FROM REGION R, RESPONSIBLE RES, WATER W \r\n"
+					+ "WHERE R.ID_RESPONSIBLE = RES.ID AND R.ID_WATER = W.ID");
+			result = state.executeQuery();
+			model = new MyModel(result);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	
 	public static Connection getConnection() {
 
 	        try {
